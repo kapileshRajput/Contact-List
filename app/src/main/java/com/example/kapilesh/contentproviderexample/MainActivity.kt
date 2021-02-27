@@ -1,24 +1,32 @@
 package com.example.kapilesh.contentproviderexample
 
+import android.Manifest.permission.READ_CONTACTS
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 private const val TAG = "MainActivity"
+private const val REQUEST_CODE_READ_CONTACTS = 1
 
 class MainActivity : AppCompatActivity() {
+    private var readGranted = false
     val contact_names by lazy { findViewById<ListView>(R.id.contact_names) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
+
+        val hasReadContactPermission =
+            ContextCompat.checkSelfPermission(this, READ_CONTACTS)
+        Log.d(TAG, "onCreate: Has Permission to read contacts ==>> $hasReadContactPermission")
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             Log.d(TAG, "onCreate: onclick => starts")
