@@ -1,6 +1,7 @@
 package com.example.kapilesh.contentproviderexample
 
 import android.Manifest.permission.READ_CONTACTS
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -27,6 +29,18 @@ class MainActivity : AppCompatActivity() {
         val hasReadContactPermission =
             ContextCompat.checkSelfPermission(this, READ_CONTACTS)
         Log.d(TAG, "onCreate: Has Permission to read contacts ==>> $hasReadContactPermission")
+
+        if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "onCreate: Permission Granted")
+            readGranted = true // ToDo: don't do this
+        } else {
+            Log.d(TAG, "onCreate: Permission Denied")
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(READ_CONTACTS),
+                REQUEST_CODE_READ_CONTACTS
+            )
+        }
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             Log.d(TAG, "onCreate: onclick => starts")
@@ -63,6 +77,33 @@ class MainActivity : AppCompatActivity() {
 
             Log.d(TAG, "onCreate: onclick => ends")
         }
+
+        Log.d(TAG, "onCreate: ends")
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        Log.d(TAG, "onRequestPermissionsResult: starts")
+        when (requestCode) {
+            REQUEST_CODE_READ_CONTACTS -> {
+                readGranted =
+                    if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        // permission was granted.
+                        // Do the contacts related tast we need to do.
+                        Log.d(TAG, "onRequestPermissionsResult: permission granted")
+                        true
+                    } else {
+                        // permission denied
+                        // disable the functionallity that depends on this permission
+                        Log.d(TAG, "onRequestPermissionsResult: permission refused")
+                        false
+                    }
+            }
+        }
+        Log.d(TAG, "onRequestPermissionsResult: ends")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
