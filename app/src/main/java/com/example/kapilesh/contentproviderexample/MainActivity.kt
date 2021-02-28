@@ -1,15 +1,17 @@
 package com.example.kapilesh.contentproviderexample
 
 import android.Manifest.permission.READ_CONTACTS
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -38,6 +40,7 @@ class MainActivity : AppCompatActivity() {
             readGranted = true // ToDo: don't do this
         } else {
             Log.d(TAG, "onCreate: Permission Denied")
+            // method to request permission
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(READ_CONTACTS),
@@ -85,10 +88,32 @@ class MainActivity : AppCompatActivity() {
                     "Please grant access to your Contacts",
                     Snackbar.LENGTH_INDEFINITE
                 ).setAction(
-                    "Action"
+                    "Grant Access"
                 ) {
-                    Toast.makeText(it.context, "Snackbar action clicked.", Toast.LENGTH_SHORT)
-                        .show()
+                    Log.d(TAG, "onCreate: Snackbar -> start")
+                    // method to check if user has previously denied the permission request:
+                    // returns true if app has requested this permission previously.
+                    // returns false if user chose "Don't ask again" option
+                    //            or if device policy prohibits the app from having the permission
+                    //            or if the user already has the permission
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_CONTACTS)) {
+                        Log.d(TAG, "onCreate: Snackbar -> Calling requestPermissions")
+                        ActivityCompat.requestPermissions(
+                            this,
+                            arrayOf(READ_CONTACTS),
+                            REQUEST_CODE_READ_CONTACTS
+                        )
+                    } else {
+                        // the user has permanently denied the permission so take them to app's setting
+                        Log.d(TAG, "onCreate: Snackbar -> launching settings")
+                        val intent = Intent()
+                        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                        val uri = Uri.fromParts("package", this.packageName, null)
+                        Log.d(TAG, "onCreate: Snackbar -> URI => $uri")
+                        intent.data = uri
+                        this.startActivity(intent)
+                    }
+                    Log.d(TAG, "onCreate: Scakbar -> end")
                 }
                     .show()
             }
