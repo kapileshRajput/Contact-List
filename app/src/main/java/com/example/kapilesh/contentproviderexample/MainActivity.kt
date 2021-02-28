@@ -35,10 +35,7 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, READ_CONTACTS)
         Log.d(TAG, "onCreate: Has Permission to read contacts ==>> $hasReadContactPermission")
 
-        if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "onCreate: Permission Granted")
-//            readGranted = true // ToDo: don't do this
-        } else {
+        if (hasReadContactPermission != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "onCreate: Permission Denied")
             // method to request permission
             ActivityCompat.requestPermissions(
@@ -130,6 +127,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate: ends")
     }
 
+/* Not needed anymore:--->>>>
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -146,7 +144,7 @@ class MainActivity : AppCompatActivity() {
 //                        true
                 } else {
                     // permission denied
-                    // disable the functionallity that depends on this permission
+                    // disable the functionality that depends on this permission
                     Log.d(TAG, "onRequestPermissionsResult: permission refused")
 //                        false
                 }
@@ -155,6 +153,7 @@ class MainActivity : AppCompatActivity() {
         }
         Log.d(TAG, "onRequestPermissionsResult: ends")
     }
+*/
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
