@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -79,7 +80,16 @@ class MainActivity : AppCompatActivity() {
                     contactNames.adapter = adapter
                 }
             } else {
-                Snackbar.make(view, "Please grant access to your Contacts", Snackbar.LENGTH_LONG).setAction("Action", null)
+                Snackbar.make(
+                    view,
+                    "Please grant access to your Contacts",
+                    Snackbar.LENGTH_INDEFINITE
+                ).setAction(
+                    "Action"
+                ) {
+                    Toast.makeText(it.context, "Snackbar action clicked.", Toast.LENGTH_SHORT)
+                        .show()
+                }
                     .show()
             }
 
